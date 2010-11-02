@@ -1,4 +1,4 @@
-if you hack without an IDE, as many minimalists do, you probably get visibility into your code by tailing logs.
+if you hack without an IDE, as many minimalists do, you probably get visibility into your program's state by tailing logs.
 
 enter thinlog.
 
