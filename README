@@ -1,18 +1,11 @@
-if you hack without an IDE, as many minimalists do, you probably do so by tailing logs.
+if you hack without an IDE, as many minimalists do, you probably get visibility into your code by tailing logs.
 
-thinlog is extremely lightweight (~15 lines of code)
+have you ever been in the middle of uncommenting a bunch of error_log calls,
+  which you had just commnented out,
+  before learning of a new bug in your feature?
+  
+ever thought "it would sure be nice if i could turn logging on and off for functional areas of my app easily"?
 
-thinlog has a superb feature, called buckets
-
-
-
-About Buckets
-
-thinlog.php function calls can optionally be sent a bucket name as a second parameter
-
-  This is useful if you want in-depth logging while developing a feature.  Just make your logging
-      Once you're done developing it, you *could* delete all the thinlog calls...
-      ...but that would be time-consuming
-      ...and you may want those same log calls later, e.g. if you found a bug!
-      Instead of deleting all the calls, you can just set the value of the bucket for that feature in question to 0!
-      If you later run into bugs in that feature and wish to have visibility again, just set it back to 1!
+thinlog does this
+thinlog is extremely lightweight
+thinlog is ridiculously easy to use

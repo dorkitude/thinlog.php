@@ -3,25 +3,42 @@
     class thinlog {
         
         protected static $config = array(
-            "log" => array(
-                "path" => "/var/log/log.log",
-                "buckets" => array(
-                    "default" => true,
-                ),
-            ),
-            
-            "info" => array(
-                "path" => "/var/log/info.log",
-                "buckets" => array(
-                    "default" => true,
-                ),
+            "path" => "/var/log/thinlog.log", // this can be relative (starts with a '/' or absolute)
+            "buckets" => array(
+                "default" => true,  // this special bucket is a catch-all for undefined buckets.  i wouldn't remove it!
             ),
         );
 
-
-        public function __call($functionName, $arguments = array("default")) {
-            //now do something!
+        public static function log($input, $bucketName = "default") {
+            if (!isset(self::$config["buckets"][$bucketName])) {
+                error_log("I thought you might want to know that you attempted to log to a bucket named '{$bucketName}', but you haven't configured that bucket..");
+                $bucketName = "default";
+            }
+            
+            $path = self::$config["path"];
+            
+            // don't do anything if the bucket value is set to false
+            if (!self::$config["buckets"][$bucketName]) return false;
+            
+            // serialize arrays
+            if (is_array($input)) $input = json_encode($input);
+            
+            // construct the message
+            $message = date('l H:i:s') . " [ {$bucketName} ] {$input}\n";
+            
+            // create absolute path from relative path, if necessary
+            if (substr($path, 0, 1) != '/') {
+                $path = dirname(__FILE__) . "/" . $path;
+            }
+            
+            //do the logging!
+            if(!$attempt = error_log($message, 3, $path)) {
+                throw new Exception("thinlog ran into this php error when trying to write to log:" . $php_errormsg );
+            }
+            
+            return true;
         }
+        
     }
 
 
@@ -29,56 +46,42 @@
 
 
 
+/* 
+<looky here, full docs!>
 
+    How to use thinlog.php
+        1. Modify the $config associative array to suit your fancy
+        2. Log something in your app code, like this:  thinlog::log("Sup world!")
+        3. In terminal, do "tail -f <pathToLogFile>" where <pathToLogFile> is replaced by the path you setup in $config["path"]
 
-
-
-    /* 
-    <looky here, full docs!>
-  
-      How to use thinlog.php
-        - Modify the $config associative array
-        - call functions like this:
-          thinlog::log($something) or thinlog::info($something)
-            - $something must be:
-              - anything that can be cast to a string e.g. integer, float, or an object with a __toString() method
-              - or
-              - a simple object or an array that can be JSON encoded
-  
-      More about thinlog.php
-        Each key in the $config associative array corresponds to a static function.
-          The function isn't defined in code, but instead is dynamically created using the __call function.
-            See http://php.net/manual/en/language.oop5.overloading.php for details of how this works.
-  
-        So, if you have defined:
-          $config["log"] and $config["info"]
-  
-        Then you would write to those logs by calling, respectively:
-          thinlog::log("Hello, world!") and thinlog::info("Sup witchu?")
-          
-         
-        Each entry in $config needs to have a "path" string and  "buckets" array.
-          "path"
-            - This can be relative (just don't start it with a '/') or absolute (start it with a '/')
-
-          "buckets"
-            - A simple mapping between a bucket names and booleans.
-            
-            
-     
-      About Buckets
-      thinlog.php function calls can optionally be sent a bucket name as a second parameter
-        This is useful if you want in-depth logging while developing a feature.
-            Once you're done developing it, you *could* delete all the thinlog calls...
-            ...but that would be time-consuming
-            ...and you may want those same log calls later, e.g. if you found a bug!
-            Instead of deleting all the calls, you can just set the value of the bucket for that feature in question to 0.
-            If you later run into bugs in that feature and wish to have visibility again, just set it back to 1
+    "path"
+        This can be relative (just don't start it with a '/') or absolute (start it with a '/')
+    "buckets"
+        A simple mapping between a bucket names and booleans
+        
     
-    </docs>
-    */
-
-
+    Example-based explanation of how BUCKETS work:
+    
+        If this were your $config:
+        
+            protected static $config = array(
+                "path" => "/var/log/myLogFile.log",
+                "buckets" => array(
+                    "default" => true,
+                    "chunky" => true,
+                    "bacon" => false,
+                ),
+            );
+        
+        
+        Then a call to thinlog::log("Sup werld", "chunky") would actually write to the log,
+            since you send the "chunky" bucket name, and that bucket is set to true.
+        But a call to thinlog::log("Not much u?", "bacon") would not write to anything,
+            because the bucket "bacon" is set to false.
+        The "default" bucket will take over if...
+            ..you send a bucket name that isn't listed
+            ..you don't send a bucket name at all! (the 2nd argument to log() is optional)
+*/
 
 /*    
     <license stuff>
