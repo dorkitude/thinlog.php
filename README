@@ -5,7 +5,61 @@ enter thinlog.
 thinlog only really has one feature:
   it lets you tag each log call with a tag name, and toggle logging for each tag
 
-
 thinlog was designed to be extremely lightweight and is ridiculously easy to use.
 
 ruby and python versions coming soon!
+
+
+-----------------
+
+
+an example (for the concrete among us)
+
+
+
+
+APP CODE
+---------------------------------------------------
+//...
+thinlog::log("starting chunkiness algorithm", "bacon_factory");
+// etc
+thinlog::log("looks like this bacon is indeed chunky!", "bacon_factory");
+//...
+---------------------------------------------------
+
+
+you: "okay, i'm done making the bacon_factory!  now, to turn off logging on these features..."
+you: "thanks to thinlog, i don't have to touch my app code! those logging calls could come in handy one day."
+you: *opens up thinlog.php*
+
+
+thinlog.php
+---------------------------------------------------
+//...
+$config["tags"] = array(
+  "bacon_factory" => false,
+);
+//...
+---------------------------------------------------
+
+
+...
+(3 days pass)
+...
+
+you: "oh no! there's some kind of bug with the bacon_factory. good thing i still have all that logging code!"
+you: *opens up thinlog.php*
+
+
+thinlog.php
+---------------------------------------------------
+//...
+$config["tags"] = array(
+  "bacon_factory" => true,
+);
+//...
+---------------------------------------------------
+
+
+you: *gains 2000 xp, gains a level, saves the world*
+you: *can now develop and bugfix more quickly! that's like living longer*
