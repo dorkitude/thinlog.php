@@ -4,27 +4,27 @@
         
         protected static $config = array(
             "path" => "/var/log/thinlog.log", // this can be relative (starts with a '/' or absolute)
-            "buckets" => array(
-                "default" => true,  // this special bucket is a catch-all for undefined buckets.  i wouldn't remove it!
+            "tags" => array( // here you can turn logging on (true) or off (false) for each tag in your app
+                "default" => true,  // this special tag is a catch-all for undefined tags.  i wouldn't remove it!
             ),
         );
 
-        public static function log($input, $bucketName = "default") {
-            if (!isset(self::$config["buckets"][$bucketName])) {
-                error_log("I thought you might want to know that you attempted to log to a bucket named '{$bucketName}', but you haven't configured that bucket..");
-                $bucketName = "default";
+        public static function log($input, $tagName = "default") {
+            if (!isset(self::$config["tags"][$tagName])) {
+                error_log("I thought you might want to know that you attempted to log to a tag named '{$tagName}', but you haven't configured that tag..");
+                $tagName = "default";
             }
             
             $path = self::$config["path"];
             
-            // don't do anything if the bucket value is set to false
-            if (!self::$config["buckets"][$bucketName]) return false;
+            // don't do anything if the tag value is set to false
+            if (!self::$config["tags"][$tagName]) return false;
             
             // serialize arrays
             if (is_array($input)) $input = json_encode($input);
             
             // construct the message
-            $message = date('l H:i:s') . " [ {$bucketName} ] {$input}\n";
+            $message = date('l H:i:s') . " [ {$tagName} ] {$input}\n";
             
             // create absolute path from relative path, if necessary
             if (substr($path, 0, 1) != '/') {
@@ -56,17 +56,17 @@
 
     "path"
         This can be relative (just don't start it with a '/') or absolute (start it with a '/')
-    "buckets"
-        A simple mapping between a bucket names and booleans
+    "tags"
+        A simple mapping between tag names and booleans
         
     
-    Example-based explanation of how BUCKETS work:
+    Example-based explanation of how TAGS work:
     
         If this were your $config:
         
             protected static $config = array(
                 "path" => "/var/log/myLogFile.log",
-                "buckets" => array(
+                "tags" => array(
                     "default" => true,
                     "chunky" => true,
                     "bacon" => false,
@@ -75,12 +75,12 @@
         
         
         Then a call to thinlog::log("Sup werld", "chunky") would actually write to the log,
-            since you send the "chunky" bucket name, and that bucket is set to true.
+            since you send the "chunky" tag name, and logging for that tag is turned on
         But a call to thinlog::log("Not much u?", "bacon") would not write to anything,
-            because the bucket "bacon" is set to false.
-        The "default" bucket will take over if...
-            ..you send a bucket name that isn't listed
-            ..you don't send a bucket name at all! (the 2nd argument to log() is optional)
+            because logging for the tag "bacon" is set to false.
+        The "default" tag will take over if...
+            ..you send a tag name that isn't listed
+            ..you don't send a tag name at all! (the 2nd argument to log() is optional)
 */
 
 /*    

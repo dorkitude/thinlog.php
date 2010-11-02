@@ -1,9 +1,11 @@
 if you hack without an IDE, as many minimalists do, you probably get visibility into your code by tailing logs.
 
-have you ever thought "it would sure be nice if i could turn logging on and off for functional areas of my app easily"?
+enter thinlog.
 
-there are heavyweight solutions that do this.
+thinlog only really has one feature:
+  it lets you tag each log call with a tag name, and toggle logging for each tag
 
-..but thinlog does this in one class, expressed in 18 lines of code.
-thinlog is extremely lightweight.
-thinlog is ridiculously easy to use.
+
+thinlog was designed to be extremely lightweight and is ridiculously easy to use.
+
+ruby and python versions coming soon!
