@@ -1,0 +1,18 @@
+if you hack without an IDE, as many minimalists do, you probably do so by tailing logs.
+
+thinlog is extremely lightweight (~15 lines of code)
+
+thinlog has a superb feature, called buckets
+
+
+
+About Buckets
+
+thinlog.php function calls can optionally be sent a bucket name as a second parameter
+
+  This is useful if you want in-depth logging while developing a feature.  Just make your logging
+      Once you're done developing it, you *could* delete all the thinlog calls...
+      ...but that would be time-consuming
+      ...and you may want those same log calls later, e.g. if you found a bug!
+      Instead of deleting all the calls, you can just set the value of the bucket for that feature in question to 0!
+      If you later run into bugs in that feature and wish to have visibility again, just set it back to 1!
